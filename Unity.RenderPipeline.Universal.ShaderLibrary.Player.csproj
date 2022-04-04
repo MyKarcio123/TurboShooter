@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{B9B848A7-F1D8-DD27-ED68-ABB3380268FF}</ProjectGuid>
+    <ProjectGuid>{7AA4C3D2-D611-C028-4983-CEF945D0FA04}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.RenderPipeline.Universal.ShaderLibrary</AssemblyName>
@@ -56,23 +56,53 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\ShaderTypes.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ShaderTypes.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\DebugViewEnums.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Deprecated.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Input.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Core.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\SurfaceInput.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\UnityInput.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Lighting.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Particles.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Deprecated.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\DeclareOpaqueTexture.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\ShaderGraphFunctions.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\ShaderTypes.cs.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Unity.RenderPipelines.Universal.ShaderLibrary.asmdef" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\Shadows.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\MetaInput.hlsl" />
-    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@7.3.1\ShaderLibrary\DeclareDepthTexture.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\NormalReconstruction.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\DBuffer.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\VisualEffectVertex.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\UniversalDOTSInstancing.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\DebuggingFullscreen.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Unlit.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\DeclareNormalsTexture.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Input.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Core.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\SSAO.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\BRDF.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\DebugViewEnums.cs.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\SurfaceInput.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\DebuggingCommon.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\UnityInput.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Lighting.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\UniversalMetaPass.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ShaderVariablesFunctions.deprecated.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\LightCookie\LightCookieInput.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ParticlesInstancing.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\SurfaceData.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Particles.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\LightCookie\LightCookie.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Deprecated.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ShaderVariablesFunctions.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\Debugging3D.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\DeclareOpaqueTexture.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\LightCookie\LightCookieTypes.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ShaderGraphFunctions.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\GlobalIllumination.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\ShaderTypes.cs.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Unity.RenderPipelines.Universal.ShaderLibrary.asmdef" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\UnityGBuffer.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\AmbientOcclusion.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Clustering.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Shadows.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\MetaInput.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\UnityTypes.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\DecalInput.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\Debug\Debugging2D.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\RealtimeLights.hlsl" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\ShaderLibrary\DeclareDepthTexture.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -275,6 +305,21 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.17f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -645,11 +690,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
-      <Project>{3BD01664-3B6E-3534-036E-FCB655C220B2}</Project>
+      <Project>{5ADF9669-B699-BDE0-D060-87EC98B6D91F}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.Player.csproj">
-      <Project>{DE55EE6E-DBE1-E1E5-E921-229C7AEC7E0B}</Project>
+      <Project>{0EA2D18E-AF8A-FFB0-834A-E8BA33A32C2E}</Project>
       <Name>UnityEngine.UI.Player</Name>
     </ProjectReference>
   </ItemGroup>

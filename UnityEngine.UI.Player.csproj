@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{DE55EE6E-DBE1-E1E5-E921-229C7AEC7E0B}</ProjectGuid>
+    <ProjectGuid>{0EA2D18E-AF8A-FFB0-834A-E8BA33A32C2E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>UnityEngine.UI</AssemblyName>
@@ -141,9 +141,13 @@
     <Compile Include="Library\PackageCache\com.unity.ugui@1.0.0\Runtime\EventSystem\EventHandle.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@1.0.0\Runtime\UI\Core\Layout\LayoutGroup.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@1.0.0\Runtime\EventSystem\InputModules\TouchInputModule.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@12.1.6\Editor\Generation\Targets\BuiltIn\Editor\ShaderGUI\MaterialAssemblyReference\RawRenderQueue.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\Editor\ShaderGUI\MaterialAssemblyReference\RawRenderQueue.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Library\PackageCache\com.unity.shadergraph@12.1.6\Editor\Generation\Targets\BuiltIn\Editor\ShaderGUI\MaterialAssemblyReference\MaterialAssemblyReference.asmref" />
     <None Include="Library\PackageCache\com.unity.ugui@1.0.0\Runtime\UnityEngine.UI.asmdef" />
+    <None Include="Library\PackageCache\com.unity.render-pipelines.universal@12.1.6\Editor\ShaderGUI\MaterialAssemblyReference\MaterialAssemblyReference.asmref" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -346,6 +350,21 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.4\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.17f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>

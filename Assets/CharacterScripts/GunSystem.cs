@@ -55,7 +55,8 @@ public class GunSystem : MonoBehaviour
             bulletsShot = bulletsPerTap;
             shoot.PlayOneShot(shoot.clip);
             Invoke("SoundEfect", 1f);
-            anim.Play("Shotgunanim",0,0f);
+            anim.Play("Shotanim",0,0f);
+            //anim.Play("SecondShotgunAnim",0,0f);
             Shoot();
         }
     }
@@ -71,8 +72,7 @@ public class GunSystem : MonoBehaviour
         float x = Random.Range(-spread, spread);
         float y = Random.Range(-spread, spread);
         float z = Random.Range(-spread, spread);
-        Debug.Log("x to jest " + x);
-        Debug.Log("y to jest " + y);
+
         //Calculate Direction with Spread
         Vector3 direction = fpsCam.transform.forward + new Vector3(x,y,z);
         
