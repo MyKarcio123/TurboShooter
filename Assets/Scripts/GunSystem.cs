@@ -34,6 +34,7 @@ public class GunSystem : MonoBehaviour
     public Animator anim;
     private void Awake()
     {
+        //make sure magazine is full
         bulletsLeft = magazineSize;
         readyToShot = true;
     }
@@ -42,7 +43,7 @@ public class GunSystem : MonoBehaviour
         MyInput();
 
         //SetText
-        text.SetText(bulletsLeft + " / " + magazineSize);   
+        text.SetText(bulletsLeft/bulletsPerTap+"");   
     }
     private void MyInput()
     {

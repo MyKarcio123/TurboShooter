@@ -359,6 +359,7 @@
 "Assets/Scripts/MoveCamera.cs"
 "Assets/Scripts/Movement.cs"
 "Assets/Scripts/Playercamera.cs"
+"Assets/Scripts/ProjectileGunSystem.cs"
 "Assets/Scripts/ShootingAi.cs"
 "Assets/Scripts/WeaponSwitch.cs"
 -langversion:9.0
