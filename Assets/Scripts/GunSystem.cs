@@ -12,7 +12,7 @@ public class GunSystem : MonoBehaviour
     int bulletsLeft, bulletsShot;
 
     //bools
-    bool shooting, readyToShot, reloading;
+    bool shooting, readyToShot, reloading, projectile;
 
     //Reference
     public Camera fpsCam;
@@ -43,6 +43,7 @@ public class GunSystem : MonoBehaviour
         MyInput();
 
         //SetText
+        Debug.Log(bulletsPerTap);
         text.SetText(bulletsLeft/bulletsPerTap+"");   
     }
     private void MyInput()

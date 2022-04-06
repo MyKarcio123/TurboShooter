@@ -25,7 +25,7 @@ public class ProjectileGunSystem : MonoBehaviour
     public Transform attackPoint;
 
     //Graphics
-    public GameObject muzzleFlash;
+    public GameObject muzzleFlash, bulletHoleGraphics;
     public TextMeshProUGUI ammunitionDisplay;
 
     private void Awake()
@@ -90,7 +90,7 @@ public class ProjectileGunSystem : MonoBehaviour
 
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-        currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * shootForce, ForceMode.Impulse);
+        currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * upwardForce, ForceMode.Impulse);
 
         //Instantiate muzzle flash, if have one
         if (muzzleFlash != null)
