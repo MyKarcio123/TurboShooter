@@ -16,6 +16,7 @@ public class ProjectileGunSystem : MonoBehaviour
     public int magazineSize, bulletsPerTap;
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
+    public float muzzleFlashLifeTime;
 
     //bool
     bool shooting, readyToShoot, reloading;
@@ -92,9 +93,10 @@ public class ProjectileGunSystem : MonoBehaviour
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
         currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * upwardForce, ForceMode.Impulse);
 
-        //Instantiate muzzle flash, if have one
-        if (muzzleFlash != null)
-            Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+        //Instantiate muzzle flash
+        GameObject Flash = Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity) as GameObject;
+        Flash.transform.parent = attackPoint.transform;
+        Destroy(Flash, muzzleFlashLifeTime);
 
         bulletsLeft--;
         bulletsShot++;

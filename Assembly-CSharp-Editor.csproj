@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\EffectExamples\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
+    <Compile Include="Assets\EffectExamples\Shared\Ramps\Editor\RampAssetEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\EffectExamples\Editor\PackageManagerAssembly\PackageManagerAssembly.dll" />

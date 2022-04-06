@@ -10,6 +10,7 @@ public class GunSystem : MonoBehaviour
     public int magazineSize, bulletsPerTap;
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
+    public float muzzleFlashLifeTime;
 
     //bools
     bool shooting, readyToShot, reloading, projectile;
@@ -43,7 +44,6 @@ public class GunSystem : MonoBehaviour
         MyInput();
 
         //SetText
-        Debug.Log(bulletsPerTap);
         text.SetText(bulletsLeft/bulletsPerTap+"");   
     }
     private void MyInput()
@@ -57,7 +57,7 @@ public class GunSystem : MonoBehaviour
             bulletsShot = bulletsPerTap;
             shoot.PlayOneShot(shoot.clip);
             Invoke("SoundEfect", 1f);
-            anim.Play("Shotanim",0,0f);
+            if(anim!=null)  anim.Play("Shotanim",0,0f);
             //anim.Play("SecondShotgunAnim",0,0f);
             Shoot();
         }
@@ -93,7 +93,9 @@ public class GunSystem : MonoBehaviour
         GameObject newHole = Instantiate(bulletHoleGraphics, rayHit.point + rayHit.normal * 0.001f, Quaternion.identity) as GameObject;
         newHole.transform.LookAt(rayHit.point + rayHit.normal);
         Destroy(newHole, 5f);
-        Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+        GameObject Flash = Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity) as GameObject;
+        Flash.transform.parent = attackPoint.transform;
+        Destroy(Flash, muzzleFlashLifeTime);
 
         bulletsLeft--;
         bulletsShot--;
