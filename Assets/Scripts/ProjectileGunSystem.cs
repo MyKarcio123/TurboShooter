@@ -26,7 +26,7 @@ public class ProjectileGunSystem : MonoBehaviour
     public Transform attackPoint;
 
     //Graphics
-    public GameObject muzzleFlash, bulletHoleGraphics;
+    public GameObject muzzleFlash;
     public TextMeshProUGUI ammunitionDisplay;
 
     private void Awake()

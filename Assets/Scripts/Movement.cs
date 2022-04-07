@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
+    public float gravityScale;
     bool readyToJump = true;
 
     [Header("Keybinds")]
@@ -36,12 +37,13 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
     }
+    /*private void FixedUpdate()
+    {
+        MovePlayer();
+    }*/
     private void FixedUpdate()
     {
         MovePlayer();
-    }
-    void Update()
-    {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         if (grounded)
@@ -86,6 +88,7 @@ public class Movement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
     }
     private void ResetJump()
     {

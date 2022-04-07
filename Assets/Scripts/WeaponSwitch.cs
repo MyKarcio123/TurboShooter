@@ -36,6 +36,18 @@ public class WeaponSwitch : MonoBehaviour
                 selectedWeapon--;
             }
             SelectWeapon();
+        }else if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            selectedWeapon = 0;
+            SelectWeapon();
+        }else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedWeapon = 1;
+            SelectWeapon();
+        }else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedWeapon = 2;
+            SelectWeapon();
         }
     }
     void SelectWeapon()
