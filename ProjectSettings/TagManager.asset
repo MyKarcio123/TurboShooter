@@ -17,7 +17,7 @@ TagManager:
   - Weapon
   - Lighting
   - Ground
-  - Postprocessing
+  - PostProccesing
   - Enemy
   - Bullet
   - Player
@@ -41,7 +41,7 @@ TagManager:
   - 
   m_SortingLayers:
   - name: Fire
-    uniqueID: 3804908061
+    uniqueID: 3838968075
     locked: 0
   - name: Default
     uniqueID: 0

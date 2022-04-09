@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7800523580103758425}
   - component: {fileID: 7800523580101855799}
   - component: {fileID: 8196154028747377940}
-  - component: {fileID: 50221292137168751}
+  - component: {fileID: 6552173013351593747}
   m_Layer: 2
   m_Name: RocketWarhead
   m_TagString: Untagged
@@ -116,8 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletHoleGraphics: {fileID: 1000010355441670, guid: 02a509a7fa70ed740ba4197e20c5d32d,
     type: 3}
---- !u!136 &50221292137168751
-CapsuleCollider:
+--- !u!64 &6552173013351593747
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -126,7 +126,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.15757236
-  m_Height: 0.31514475
-  m_Direction: 2
-  m_Center: {x: 0, y: 0.0011089295, z: 0.15646341}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: -1
+  m_Mesh: {fileID: 4300002, guid: c25b0e0e92e901144a739246c4539336, type: 3}
