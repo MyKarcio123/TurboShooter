@@ -11,6 +11,8 @@ public class Movement : MonoBehaviour
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
+    public float maxJumps;
+    private float jumpLeft;
     bool readyToJump = true;
 
     [Header("Keybinds")]
@@ -32,6 +34,7 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
+        jumpLeft = maxJumps;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
     }
@@ -41,11 +44,28 @@ public class Movement : MonoBehaviour
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         if (grounded)
+        {
             rb.drag = groundDrag;
+            if (jumpLeft == 0)
+                jumpLeft = maxJumps;
+        }
         else
+        {
+            if (jumpLeft == 2)
+                jumpLeft = 1;
             rb.drag = 0;
+        }
         MyInput();
         SpeedControl();
+    }
+    private void Update()
+    {
+        Debug.Log(jumpLeft);
+        if (Input.GetKeyDown(jumpKey) && jumpLeft > 0)
+        {
+            jumpLeft--;
+            Jump();
+        }
     }
     private void SpeedControl()
     {
@@ -60,14 +80,6 @@ public class Movement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
     }
     private void MovePlayer()
     { 
@@ -82,9 +94,6 @@ public class Movement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
-    private void ResetJump()
-    {
-        readyToJump = true;
+
     }
 }
