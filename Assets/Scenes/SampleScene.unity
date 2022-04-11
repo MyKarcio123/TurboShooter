@@ -354,12 +354,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  dashSpeed: 20
   groundDrag: 5
   jumpForce: 7
   jumpCooldown: 0
   airMultiplier: 0.4
   maxJumps: 2
+  maxDashes: 2
+  dashTime: 0.1
   jumpKey: 32
+  dashKey: 304
   playerHeight: 3
   whatIsGround:
     serializedVersion: 2
