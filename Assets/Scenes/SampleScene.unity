@@ -238,7 +238,7 @@ GameObject:
   - component: {fileID: 432476123}
   m_Layer: 13
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -362,8 +362,10 @@ MonoBehaviour:
   maxJumps: 2
   maxDashes: 2
   dashTime: 0.1
+  slowRatio: 0.1
   jumpKey: 32
   dashKey: 304
+  slowKey: 114
   playerHeight: 3
   whatIsGround:
     serializedVersion: 2

@@ -50,9 +50,9 @@ public class GunSystem : MonoBehaviour
     {
         if (allowButtonHold) shooting = Input.GetKey(KeyCode.Mouse0);
         else shooting = Input.GetKeyDown(KeyCode.Mouse0);
-
+        
         //Shoot
-        if (readyToShot && shooting && !reloading && bulletsLeft > 0)
+        if (readyToShot && shooting && !reloading && bulletsLeft > 0 && !GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>().DashingState())
         {
             bulletsShot = bulletsPerTap;
             shoot.PlayOneShot(shoot.clip);

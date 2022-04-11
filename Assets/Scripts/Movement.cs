@@ -17,10 +17,11 @@ public class Movement : MonoBehaviour
     public float maxDashes;
     private float dashLeft;
     public float dashTime;
-    private bool isDashing = false;
+    public float slowRatio;
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashKey = KeyCode.LeftShift;
+    public KeyCode slowKey = KeyCode.R;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -32,10 +33,14 @@ public class Movement : MonoBehaviour
     float horizontalInput;
     float verticalInput;
 
+    private bool isDashing = false;
     Vector3 moveDirection;
 
     Rigidbody rb;
-
+    public bool DashingState()
+    {
+        return isDashing;
+    }
     private void Start()
     {
         dashLeft = maxDashes;
@@ -67,6 +72,12 @@ public class Movement : MonoBehaviour
     }
     private void Update()
     {
+        /* IF YOU NEED HERE YOU HAVE SLOWING TIME ON SLOWKEY IT IS HARD TO BALLANCE WITH DASH
+        if (Input.GetKeyDown(slowKey))
+        {
+            Time.timeScale = slowRatio;
+        }
+        */
         if (Input.GetKeyDown(dashKey) && dashLeft > 0 &&!isDashing)
         {
             isDashing = true;
