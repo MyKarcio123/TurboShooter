@@ -18,6 +18,8 @@ public class Movement : MonoBehaviour
     private float dashLeft;
     public float dashTime;
     public float slowRatio;
+    public Transform head;
+    public Transform maxPoint;
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashKey = KeyCode.LeftShift;
@@ -27,6 +29,7 @@ public class Movement : MonoBehaviour
     public float playerHeight;
     public LayerMask whatIsGround;
     bool grounded;
+    bool atPulling;
 
     public Transform orientation;
 
@@ -35,6 +38,9 @@ public class Movement : MonoBehaviour
 
     private bool isDashing = false;
     Vector3 moveDirection;
+    Vector3 gripDirection;
+    public RaycastHit headHit;
+    public RaycastHit maxPointHit;
 
     Rigidbody rb;
     public bool DashingState()
@@ -50,7 +56,7 @@ public class Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(!isDashing)
+        if(!isDashing && !atPulling)
             MovePlayer();
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
@@ -60,6 +66,7 @@ public class Movement : MonoBehaviour
             if (jumpLeft == 0)
                 jumpLeft = maxJumps;
             dashLeft = maxDashes;
+            atPulling = false;
         }
         else
         {
@@ -67,8 +74,11 @@ public class Movement : MonoBehaviour
                 jumpLeft = 1;
             rb.drag = 0;
         }
-        MyInput();
-        SpeedControl();
+        if (!atPulling)
+        {
+            MyInput();
+            SpeedControl();
+        }
     }
     private void Update()
     {
@@ -78,13 +88,26 @@ public class Movement : MonoBehaviour
             Time.timeScale = slowRatio;
         }
         */
-        if (Input.GetKeyDown(dashKey) && dashLeft > 0 &&!isDashing)
+        Debug.Log(atPulling);
+        if (!grounded)
+        {
+            gripDirection = orientation.rotation * rb.transform.forward;
+            if (!Physics.Raycast(head.position, gripDirection, out headHit, 0.5f, whatIsGround) && Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, 0.5f, whatIsGround) && !atPulling)
+            {
+                atPulling = true;
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.useGravity = false;
+                Invoke("PullLeader", 1f);
+            }
+        }
+        if (Input.GetKeyDown(dashKey) && dashLeft > 0 &&!isDashing && !atPulling)
         {
             isDashing = true;
             dashLeft--;
             StartCoroutine(Dash());
         }
-        if (Input.GetKeyDown(jumpKey) && jumpLeft > 0 && !isDashing)
+        if (Input.GetKeyDown(jumpKey) && jumpLeft > 0 && !isDashing && !atPulling)
         {
             Jump();
         }
@@ -138,5 +161,13 @@ public class Movement : MonoBehaviour
             yield return null;
         }
         isDashing = false;
+    }
+    private void PullLeader()
+    {
+        gripDirection = orientation.rotation * rb.transform.forward;
+        gripDirection = gripDirection.normalized;
+        gripDirection.y = 3f;
+        gameObject.transform.position += gripDirection;
+        rb.useGravity = true;
     }
 }
