@@ -18,8 +18,11 @@ public class Movement : MonoBehaviour
     private float dashLeft;
     public float dashTime;
     public float slowRatio;
+    public float gripForce;
+    public float gripRaycastRange;
     public Transform head;
     public Transform maxPoint;
+    public Transform feet;
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashKey = KeyCode.LeftShift;
@@ -28,8 +31,7 @@ public class Movement : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;
-    bool atPulling;
+    private bool grounded;
 
     public Transform orientation;
 
@@ -41,8 +43,11 @@ public class Movement : MonoBehaviour
     Vector3 gripDirection;
     public RaycastHit headHit;
     public RaycastHit maxPointHit;
+    public RaycastHit feetHit;
 
     Rigidbody rb;
+
+    [HideInInspector] public bool atPulling;
     public bool DashingState()
     {
         return isDashing;
@@ -88,18 +93,9 @@ public class Movement : MonoBehaviour
             Time.timeScale = slowRatio;
         }
         */
-        Debug.Log(atPulling);
         if (!grounded)
         {
-            gripDirection = orientation.rotation * rb.transform.forward;
-            if (!Physics.Raycast(head.position, gripDirection, out headHit, 0.5f, whatIsGround) && Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, 0.5f, whatIsGround) && !atPulling)
-            {
-                atPulling = true;
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.useGravity = false;
-                Invoke("PullLeader", 1f);
-            }
+            Pull();
         }
         if (Input.GetKeyDown(dashKey) && dashLeft > 0 &&!isDashing && !atPulling)
         {
@@ -142,32 +138,50 @@ public class Movement : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
     }
+
+    private void Pull()
+    {
+        gripDirection = orientation.rotation * rb.transform.forward;
+        if (!Physics.Raycast(head.position, gripDirection, out headHit, gripRaycastRange, whatIsGround) && Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, gripRaycastRange, whatIsGround) && !atPulling)
+        {
+            atPulling = true;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.useGravity = false;
+            StartCoroutine(Pulling());
+        }
+    }
+    IEnumerator Pulling()
+    {
+        gripDirection = orientation.rotation * rb.transform.forward;
+        gripDirection = gripDirection.normalized;
+        while (Physics.Raycast(feet.position, gripDirection, out feetHit, gripRaycastRange, whatIsGround))
+        {
+            gameObject.transform.position += new Vector3(0, gripForce, 0);
+            yield return null;
+        }
+        gameObject.transform.position += gripDirection * 0.7f;
+        rb.useGravity = true;
+        atPulling = false;
+    }
     IEnumerator Dash()
     {
         bool needNormalize = true;
         float startTime = Time.time;
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        if(moveDirection == new Vector3(0, 0, 0))
+        if (moveDirection == new Vector3(0, 0, 0))
         {
             moveDirection = orientation.rotation * rb.transform.forward;
             needNormalize = false;
         }
-        while (Time.time < startTime + dashTime)
+        while (Time.time < startTime + dashTime && !Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, gripRaycastRange, whatIsGround) && !atPulling)
         {
-            if(needNormalize)
+            if (needNormalize)
                 rb.AddForce(moveDirection.normalized * dashSpeed, ForceMode.Impulse);
             else
                 rb.AddForce(moveDirection * dashSpeed, ForceMode.Impulse);
             yield return null;
         }
         isDashing = false;
-    }
-    private void PullLeader()
-    {
-        gripDirection = orientation.rotation * rb.transform.forward;
-        gripDirection = gripDirection.normalized;
-        gripDirection.y = 3f;
-        gameObject.transform.position += gripDirection;
-        rb.useGravity = true;
     }
 }
