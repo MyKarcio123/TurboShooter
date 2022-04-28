@@ -13,7 +13,7 @@ public class Movement : MonoBehaviour
     public float jumpCooldown;
     public float airMultiplier;
     public float maxJumps;
-    private float jumpLeft;    
+    private float jumpLeft;
     public float maxDashes;
     private float dashLeft;
     public float dashTime;
@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     public float gripRaycastRange;
     public Transform head;
     public Transform maxPoint;
+    public Transform minPoint;
     public Transform feet;
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -33,6 +34,11 @@ public class Movement : MonoBehaviour
     public LayerMask whatIsGround;
     private bool grounded;
 
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
+
     public Transform orientation;
 
     float horizontalInput;
@@ -43,6 +49,7 @@ public class Movement : MonoBehaviour
     Vector3 gripDirection;
     public RaycastHit headHit;
     public RaycastHit maxPointHit;
+    public RaycastHit minPointHit;
     public RaycastHit feetHit;
 
     Rigidbody rb;
@@ -61,12 +68,13 @@ public class Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(!isDashing && !atPulling)
+        if (!isDashing && !atPulling)
             MovePlayer();
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         if (grounded)
         {
+            exitingSlope = false;
             rb.drag = groundDrag;
             if (jumpLeft == 0)
                 jumpLeft = maxJumps;
@@ -92,12 +100,17 @@ public class Movement : MonoBehaviour
         {
             Time.timeScale = slowRatio;
         }
+        Debug.DrawRay(head.position, gripDirection * gripRaycastRange, Color.yellow);
+        Debug.DrawRay(maxPoint.position, gripDirection * gripRaycastRange, Color.red);
+        Debug.DrawRay(minPoint.position, gripDirection * gripRaycastRange, Color.black);
+        Debug.DrawRay(feet.position, gripDirection * gripRaycastRange, Color.green);
+        Debug.DrawRay(maxPoint.position + gripDirection * gripRaycastRange, minPoint.position - maxPoint.position, Color.blue);
         */
-        if (!grounded)
+        if (!grounded && Input.GetKey(KeyCode.W) && !isDashing)
         {
             Pull();
         }
-        if (Input.GetKeyDown(dashKey) && dashLeft > 0 &&!isDashing && !atPulling)
+        if (Input.GetKeyDown(dashKey) && dashLeft > 0 && !isDashing && !atPulling)
         {
             isDashing = true;
             dashLeft--;
@@ -105,16 +118,31 @@ public class Movement : MonoBehaviour
         }
         if (Input.GetKeyDown(jumpKey) && jumpLeft > 0 && !isDashing && !atPulling)
         {
+            exitingSlope = true;
             Jump();
         }
     }
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (flatVel.magnitude > moveSpeed)
+        // limiting speed on slope
+        if (OnSlope() && !exitingSlope)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            if (rb.velocity.magnitude > moveSpeed)
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+
+        }
+
+        // limiting speed on ground or in air
+        else
+        {
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            // limit velocity if needed
+            if (flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
         }
     }
     private void MyInput()
@@ -123,12 +151,34 @@ public class Movement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
     }
     private void MovePlayer()
-    { 
+    {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        if(grounded)
+        Debug.Log(OnSlope());
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            if (rb.velocity.y > 0)
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+        }
+        if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        else if(!grounded)
+        else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        rb.useGravity = !OnSlope();
+    }
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
     private void Jump()
     {
@@ -142,7 +192,7 @@ public class Movement : MonoBehaviour
     private void Pull()
     {
         gripDirection = orientation.rotation * rb.transform.forward;
-        if (!Physics.Raycast(head.position, gripDirection, out headHit, gripRaycastRange, whatIsGround) && Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, gripRaycastRange, whatIsGround) && !atPulling)
+        if (!Physics.Raycast(head.position, gripDirection, out headHit, gripRaycastRange, whatIsGround) && Physics.Raycast(maxPoint.position + gripDirection * gripRaycastRange, (minPoint.position - maxPoint.position).normalized, out feetHit, maxPoint.position.y - minPoint.position.y, whatIsGround) && !atPulling)
         {
             atPulling = true;
             rb.velocity = Vector3.zero;
