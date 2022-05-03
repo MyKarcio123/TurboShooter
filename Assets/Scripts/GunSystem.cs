@@ -13,7 +13,7 @@ public class GunSystem : MonoBehaviour
     public float muzzleFlashLifeTime;
 
     //bools
-    bool shooting, readyToShot, reloading, projectile;
+    bool shooting, readyToShot, reloading;
 
     //Reference
     public Camera fpsCam;
@@ -52,7 +52,7 @@ public class GunSystem : MonoBehaviour
         else shooting = Input.GetKeyDown(KeyCode.Mouse0);
         
         //Shoot
-        if (readyToShot && shooting && !reloading && bulletsLeft > 0 && !GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>().DashingState())
+        if (readyToShot && shooting && !reloading && bulletsLeft > 0 && !GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>().IsDashing())
         {
             bulletsShot = bulletsPerTap;
             shoot.PlayOneShot(shoot.clip);

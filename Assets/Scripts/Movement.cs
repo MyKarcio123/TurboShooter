@@ -5,233 +5,145 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed;
-    public float dashSpeed;
-
-    public float groundDrag;
+    public float playerSpeed = 10.0f;
+    public float gravityValue = -9.81f;
     public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
-    public float maxJumps;
-    private float jumpLeft;
-    public float maxDashes;
-    private float dashLeft;
+    public int jumpLeft = 2;
+    public float dashSpeed;
     public float dashTime;
-    public float slowRatio;
-    public float gripForce;
-    public float gripRaycastRange;
-    public Transform head;
-    public Transform maxPoint;
-    public Transform minPoint;
-    public Transform feet;
+    public int dashLeft = 2;
+    public float playerHeight;
+    public float slopeForce;
+
+    [Header("References")]
+    public Transform orientation;
+    public LayerMask ground;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode dashKey = KeyCode.LeftShift;
     public KeyCode slowKey = KeyCode.R;
 
-    [Header("Ground Check")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
-    private bool grounded;
+    //bools
+    private bool jumping = false;
+    private bool dashing = false;
+    private bool groundedPlayer;
 
-    [Header("Slope Handling")]
-    public float maxSlopeAngle;
+    private CharacterController controller;
+    private Vector3 playerVelocity;
     private RaycastHit slopeHit;
-    private bool exitingSlope;
-
-    public Transform orientation;
-
     float horizontalInput;
     float verticalInput;
-
-    private bool isDashing = false;
-    Vector3 moveDirection;
-    Vector3 gripDirection;
-    public RaycastHit headHit;
-    public RaycastHit maxPointHit;
-    public RaycastHit minPointHit;
-    public RaycastHit feetHit;
-
-    Rigidbody rb;
-
-    [HideInInspector] public bool atPulling;
-    public bool DashingState()
-    {
-        return isDashing;
-    }
     private void Start()
     {
-        dashLeft = maxDashes;
-        jumpLeft = maxJumps;
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
+        controller = GetComponent<CharacterController>();
     }
     private void FixedUpdate()
     {
-        if (!isDashing && !atPulling)
-            MovePlayer();
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-
-        if (grounded)
-        {
-            exitingSlope = false;
-            rb.drag = groundDrag;
-            if (jumpLeft == 0)
-                jumpLeft = maxJumps;
-            dashLeft = maxDashes;
-            atPulling = false;
-        }
-        else
-        {
-            if (jumpLeft == 2)
-                jumpLeft = 1;
-            rb.drag = 0;
-        }
-        if (!atPulling)
-        {
-            MyInput();
-            SpeedControl();
-        }
+        MovePlayer();
+        GravityController();
     }
     private void Update()
     {
-        /* IF YOU NEED HERE YOU HAVE SLOWING TIME ON SLOWKEY IT IS HARD TO BALLANCE WITH DASH
-        if (Input.GetKeyDown(slowKey))
-        {
-            Time.timeScale = slowRatio;
-        }
-        Debug.DrawRay(head.position, gripDirection * gripRaycastRange, Color.yellow);
-        Debug.DrawRay(maxPoint.position, gripDirection * gripRaycastRange, Color.red);
-        Debug.DrawRay(minPoint.position, gripDirection * gripRaycastRange, Color.black);
-        Debug.DrawRay(feet.position, gripDirection * gripRaycastRange, Color.green);
-        Debug.DrawRay(maxPoint.position + gripDirection * gripRaycastRange, minPoint.position - maxPoint.position, Color.blue);
-        */
-        if (!grounded && Input.GetKey(KeyCode.W) && !isDashing)
-        {
-            Pull();
-        }
-        if (Input.GetKeyDown(dashKey) && dashLeft > 0 && !isDashing && !atPulling)
-        {
-            isDashing = true;
-            dashLeft--;
-            StartCoroutine(Dash());
-        }
-        if (Input.GetKeyDown(jumpKey) && jumpLeft > 0 && !isDashing && !atPulling)
-        {
-            exitingSlope = true;
-            Jump();
-        }
-    }
-    private void SpeedControl()
-    {
-        // limiting speed on slope
-        if (OnSlope() && !exitingSlope)
-        {
-            if (rb.velocity.magnitude > moveSpeed)
-                rb.velocity = rb.velocity.normalized * moveSpeed;
-
-        }
-
-        // limiting speed on ground or in air
-        else
-        {
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-            // limit velocity if needed
-            if (flatVel.magnitude > moveSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-            }
-        }
+        groundedPlayer = controller.isGrounded;
+        JumpController();
+        MyInput();
     }
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        if (Input.GetKeyDown(jumpKey) && jumpLeft>0 && !dashing)
+        {
+            Jump();
+        }
+        if (Input.GetKeyDown(dashKey) && dashLeft > 0)
+        {
+            StartCoroutine(Dash());
+        }
     }
     private void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        Debug.Log(OnSlope());
-        if (OnSlope() && !exitingSlope)
+        Vector3 move = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        controller.Move(move.normalized * Time.deltaTime * playerSpeed);
+        if (move != Vector3.zero)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
-            if (rb.velocity.y > 0)
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+            gameObject.transform.forward = move;
         }
-        if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        rb.useGravity = !OnSlope();
-    }
-    private bool OnSlope()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if ((horizontalInput != 0 || verticalInput != 0) && OnSlope())
         {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle < maxSlopeAngle && angle != 0;
+            controller.Move(Vector3.down * controller.height / 2 * slopeForce * Time.deltaTime);
         }
-        return false;
-    }
-
-    private Vector3 GetSlopeMoveDirection()
-    {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
     private void Jump()
     {
         jumpLeft--;
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
+        jumping = true;
+        playerVelocity.y = jumpForce;
+        controller.Move(playerVelocity * Time.deltaTime);
     }
+    private void GravityController()
+    {
+        if (groundedPlayer && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+        }
 
-    private void Pull()
-    {
-        gripDirection = orientation.rotation * rb.transform.forward;
-        if (!Physics.Raycast(head.position, gripDirection, out headHit, gripRaycastRange, whatIsGround) && Physics.Raycast(maxPoint.position + gripDirection * gripRaycastRange, (minPoint.position - maxPoint.position).normalized, out feetHit, maxPoint.position.y - minPoint.position.y, whatIsGround) && !atPulling)
-        {
-            atPulling = true;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.useGravity = false;
-            StartCoroutine(Pulling());
-        }
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        controller.Move(playerVelocity * Time.deltaTime);
     }
-    IEnumerator Pulling()
+    private void JumpController()
     {
-        gripDirection = orientation.rotation * rb.transform.forward;
-        gripDirection = gripDirection.normalized;
-        while (Physics.Raycast(feet.position, gripDirection, out feetHit, gripRaycastRange, whatIsGround))
+        if (groundedPlayer)
         {
-            gameObject.transform.position += new Vector3(0, gripForce, 0);
-            yield return null;
+            jumpLeft = 2;
+            jumping = false;
+            dashLeft = 2;
         }
-        gameObject.transform.position += gripDirection * 0.7f;
-        rb.useGravity = true;
-        atPulling = false;
+        else
+        {
+            if (jumpLeft == 2)
+                jumpLeft = 1;
+            if ((controller.collisionFlags & CollisionFlags.Above) != 0)
+            {
+                playerVelocity.y = 0f;
+            }
+        }
     }
     IEnumerator Dash()
     {
-        bool needNormalize = true;
+        dashing = true;
+        dashLeft--;
         float startTime = Time.time;
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        if (moveDirection == new Vector3(0, 0, 0))
+        Vector3 move = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        if (move == new Vector3(0, 0, 0))
         {
-            moveDirection = orientation.rotation * rb.transform.forward;
-            needNormalize = false;
+            move = orientation.forward;
         }
-        while (Time.time < startTime + dashTime && !Physics.Raycast(maxPoint.position, gripDirection, out maxPointHit, gripRaycastRange, whatIsGround) && !atPulling)
+        while (Time.time < startTime + dashTime)
         {
-            if (needNormalize)
-                rb.AddForce(moveDirection.normalized * dashSpeed, ForceMode.Impulse);
-            else
-                rb.AddForce(moveDirection * dashSpeed, ForceMode.Impulse);
+            controller.Move(move.normalized * dashSpeed * Time.deltaTime);
+            if (OnSlope())
+                controller.Move(Vector3.down * controller.height / 2 * slopeForce * Time.deltaTime);
             yield return null;
         }
-        isDashing = false;
+        dashing = false;
+    }
+    private bool OnSlope()
+    {
+        Physics.Raycast(transform.position, Vector3.down, out slopeHit);
+        if (slopeHit.normal != new Vector3(0, 1, 0) || slopeHit.transform.tag == "Stairs")
+        {
+            if (!jumping)
+            {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    public bool IsDashing() 
+    {
+        return dashing;
     }
 }

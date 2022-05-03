@@ -49,7 +49,7 @@ public class ProjectileGunSystem : MonoBehaviour
         else shooting = Input.GetKeyDown(KeyCode.Mouse0);
 
         //Shooting
-        if (readyToShoot && shooting && !reloading && bulletsLeft > 0 && !GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>().DashingState())
+        if (readyToShoot && shooting && !reloading && bulletsLeft > 0 && !GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>().IsDashing())
         {
             //Set bullets shot to 0
             bulletsShot = 0;
