@@ -15,6 +15,11 @@ public class Movement : MonoBehaviour
     public float playerHeight;
     public float slopeForce;
 
+    [Header("Ledge Grab")]
+    public Transform leftHand;
+    public Transform rightHand;
+    public float grabRange;
+
     [Header("References")]
     public Transform orientation;
     public LayerMask ground;
@@ -27,7 +32,9 @@ public class Movement : MonoBehaviour
     //bools
     private bool jumping = false;
     private bool dashing = false;
+    private bool grabing = false;
     private bool groundedPlayer;
+    private bool searchingLedge = false;
 
     private CharacterController controller;
     private Vector3 playerVelocity;
@@ -56,6 +63,10 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown(jumpKey) && jumpLeft>0 && !dashing)
         {
             Jump();
+        }
+        if (!groundedPlayer && !searchingLedge && !grabing && !dashing)
+        {
+            StartCoroutine(FindLedge());
         }
         if (Input.GetKeyDown(dashKey) && dashLeft > 0)
         {
@@ -110,6 +121,12 @@ public class Movement : MonoBehaviour
             }
         }
     }
+    private void GrabLedge()
+    {
+        grabing = true;
+        Debug.Log("GrabbingLedge");
+        grabing = false;
+    }
     IEnumerator Dash()
     {
         dashing = true;
@@ -128,6 +145,28 @@ public class Movement : MonoBehaviour
             yield return null;
         }
         dashing = false;
+    }
+    IEnumerator FindLedge()
+    {
+        print("In corutine");
+        searchingLedge = true;
+        RaycastHit leftHandHit;
+        RaycastHit rightHandHit;
+        while (jumping && !grabing)
+        {
+            if (Physics.Raycast(leftHand.position, Vector3.down, out leftHandHit, grabRange) && Physics.Raycast(rightHand.position, Vector3.down, out rightHandHit, grabRange))
+            {
+                Debug.Log(GameObject.ReferenceEquals(leftHandHit.transform.gameObject, rightHandHit.transform.gameObject));
+                if (leftHandHit.point!=leftHand.position && rightHandHit.point != rightHand.position && GameObject.ReferenceEquals(leftHandHit.transform.gameObject, rightHandHit.transform.gameObject))
+                { 
+                    GrabLedge();
+                    searchingLedge = false;
+                    break;
+                }
+            }
+            yield return null;
+        }
+        searchingLedge = false;
     }
     private bool OnSlope()
     {
