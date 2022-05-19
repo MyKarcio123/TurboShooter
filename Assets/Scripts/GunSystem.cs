@@ -83,13 +83,14 @@ public class GunSystem : MonoBehaviour
         if (Physics.Raycast(fpsCam.transform.position, direction, out rayHit, range, whatIsEnemy))
         {
             if (rayHit.collider.CompareTag("Enemy"))
-                rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
+                rayHit.collider.GetComponentInParent<HPController>().TakeHit(damage,(rayHit.point-fpsCam.transform.position).normalized);
         }
 
         //ShakeCamera
         cameraShake.Shake(cameraShakeDuration, cameraShakeMagnitude);
 
         //Graphics
+
         GameObject newHole = Instantiate(bulletHoleGraphics, rayHit.point + rayHit.normal * 0.001f, Quaternion.identity) as GameObject;
         newHole.transform.LookAt(rayHit.point + rayHit.normal);
         Destroy(newHole, 5f);

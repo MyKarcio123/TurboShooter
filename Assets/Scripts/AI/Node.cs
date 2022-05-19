@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace BehaviorTree
 {
     public enum NodeState
     {
         RUNNING,
-        SUCCES,
+        SUCCESS,
         FAILURE
     }
+
     public class Node
     {
         protected NodeState state;
@@ -17,13 +17,13 @@ namespace BehaviorTree
         public Node parent;
         protected List<Node> children = new List<Node>();
 
-        private Dictionary<string, object> _dataContex = new Dictionary<string, object>();
+        private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
         public Node()
         {
             parent = null;
         }
-        public Node(List<Node> childern) 
+        public Node(List<Node> children)
         {
             foreach (Node child in children)
                 _Attach(child);
@@ -39,13 +39,13 @@ namespace BehaviorTree
 
         public void SetData(string key, object value)
         {
-            _dataContex[key] = value;
+            _dataContext[key] = value;
         }
 
         public object GetData(string key)
         {
             object value = null;
-            if (_dataContex.TryGetValue(key, out value))
+            if (_dataContext.TryGetValue(key, out value))
                 return value;
 
             Node node = parent;
@@ -56,15 +56,14 @@ namespace BehaviorTree
                     return value;
                 node = node.parent;
             }
-
             return null;
         }
 
         public bool ClearData(string key)
         {
-            if (_dataContex.ContainsKey(key))
+            if (_dataContext.ContainsKey(key))
             {
-                _dataContex.Remove(key);
+                _dataContext.Remove(key);
                 return true;
             }
 
@@ -76,8 +75,8 @@ namespace BehaviorTree
                     return true;
                 node = node.parent;
             }
-
             return false;
         }
     }
+
 }
