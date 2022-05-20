@@ -6,15 +6,27 @@ using UnityEngine.AI;
 
 public class HPController : MonoBehaviour
 {
-    public Component AI;
-    public float _hp;
     public bool player;
+    [Header("AI Required")]
+    public Component AI;
     public float forceMultiply;
+    public GameObject objectWithDissolveShader;
+    public Material dissolveMaterial;
+    [Header("Player Required")]
     public TextMeshProUGUI HP;
-    private Rigidbody[] rigRigidbodies;
+    [Header("Required")]
+    public float _hp;
+  
     private bool die = false;
+    private Rigidbody[] rigRigidbodies;
+    private Vector3 beforePosition;
+    private Vector3 currentPosition;
+    private float timeCheckingRealDead = 2;
+    private float counter = -1;
+    private bool atDisolving = false;
     public void Awake()
     {
+        beforePosition = gameObject.transform.position;
         rigRigidbodies = GetComponentsInChildren<Rigidbody>();
         if (player)
             HP.text = _hp.ToString();
@@ -35,13 +47,49 @@ public class HPController : MonoBehaviour
                 if (!die) 
                 {
                     _rb.AddForce(hitposition*forceMultiply,ForceMode.Impulse);
+                    beforePosition = gameObject.transform.position;
                 }
             }
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
             die = true;
             gameObject.GetComponent<Animator>().enabled = false;
             gameObject.GetComponent<NavMeshAgent>().enabled = false;
         }
         if (player)
             HP.text = _hp.ToString();
+    }
+    public void Update()
+    {
+        if (!player)
+        {
+            if (atDisolving)
+            {
+                objectWithDissolveShader.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_DisolveTime", counter);
+                if (counter >= 1)
+                    Destroy(gameObject);
+                counter += Time.deltaTime;
+            }
+            else 
+            {
+                if (timeCheckingRealDead > 0 && die)
+                {
+                    timeCheckingRealDead -= Time.deltaTime;
+                }
+                else if(timeCheckingRealDead <=0 && die)
+                {
+                    if (beforePosition == currentPosition)
+                    {
+                        objectWithDissolveShader.GetComponent<SkinnedMeshRenderer>().material = dissolveMaterial;
+                        atDisolving = true;
+                    }
+                    else
+                    {
+                        beforePosition = currentPosition;
+                        currentPosition = gameObject.transform.position;
+                        timeCheckingRealDead = 2;
+                    }
+                }
+            }
+        }
     }
 }
