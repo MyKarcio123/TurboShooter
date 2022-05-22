@@ -7,7 +7,11 @@ public class TaskAttack : Node
 {
     private float _attackTime = 1f;
     private float _attackCounter = 0f;
-    private Transform _target;
+    private Transform _transform;
+    public TaskAttack(Transform transform)
+    {
+        _transform = transform;
+    }
     public override NodeState Evaluate()
     {
         Transform target = (Transform)GetData("target");
@@ -17,6 +21,9 @@ public class TaskAttack : Node
             //deal damage
             _attackCounter = 0f;
         }
+        Vector3 direction = new Vector3(target.position.x - _transform.position.x, _transform.position.y, target.position.z - _transform.position.z);
+        Quaternion toRotation = Quaternion.LookRotation(direction);
+        _transform.rotation = Quaternion.Lerp(_transform.rotation, toRotation, 1f * Time.deltaTime);
         state = NodeState.RUNNING;
         return state;
     }

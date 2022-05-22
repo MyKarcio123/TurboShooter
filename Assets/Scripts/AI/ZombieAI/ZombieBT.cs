@@ -14,7 +14,7 @@ public class ZombieBT : Tree
         {
             new Sequence(new List<Node>{ 
                 new CheckIfEnemyInRange(transform,agent),
-                new TaskAttack(),
+                new TaskAttack(transform),
             }),
             new Sequence(new List<Node>{
                 new PlayerinFOV(transform,agent),
