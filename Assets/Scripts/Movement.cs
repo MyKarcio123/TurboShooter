@@ -47,8 +47,11 @@ public class Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        MovePlayer();
-        GravityController();
+        if (!grabing)
+        {
+            MovePlayer();
+            GravityController();
+        }
     }
     private void Update()
     {
@@ -124,8 +127,9 @@ public class Movement : MonoBehaviour
     private void GrabLedge()
     {
         grabing = true;
+        //controller.enabled = false;
         Debug.Log("GrabbingLedge");
-        grabing = false;
+        //grabing = false;
     }
     IEnumerator Dash()
     {
