@@ -15,6 +15,7 @@ public class TaskAttack : Node
     public override NodeState Evaluate()
     {
         Transform target = (Transform)GetData("target");
+        Debug.Log("Attacking");
         _attackCounter += Time.deltaTime;
         if (_attackCounter >= _attackTime)
         {
@@ -25,6 +26,7 @@ public class TaskAttack : Node
         Quaternion toRotation = Quaternion.LookRotation(direction);
         _transform.rotation = Quaternion.Lerp(_transform.rotation, toRotation, 1f * Time.deltaTime);
         Debug.Log(Quaternion.Dot(_transform.rotation, toRotation));
+        /*
         if (Quaternion.Dot(_transform.rotation, toRotation) > 0.9999f)
         {
             Debug.Log("YES");

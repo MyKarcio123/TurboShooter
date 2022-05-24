@@ -18,6 +18,7 @@ public class Movement : MonoBehaviour
     [Header("Ledge Grab")]
     public Transform leftHand;
     public Transform rightHand;
+    public Transform feet;
     public float grabRange;
 
     [Header("References")]
@@ -124,12 +125,22 @@ public class Movement : MonoBehaviour
             }
         }
     }
-    private void GrabLedge()
+    private void GrabLedge(Vector3 grabPoint)
     {
         grabing = true;
-        //controller.enabled = false;
-        Debug.Log("GrabbingLedge");
-        //grabing = false;
+        StartCoroutine(Grab(grabPoint));
+    }
+    IEnumerator Grab(Vector3 grabPoint)
+    {
+        playerVelocity.y = 0;
+        while (feet.position.y<grabPoint.y)
+        {
+            controller.Move(new Vector3(0, 0.01f, 0));
+            yield return null;
+        }
+        controller.Move(orientation.forward.normalized*0.1f);
+        playerVelocity.y = 0;
+        grabing = false;
     }
     IEnumerator Dash()
     {
@@ -162,8 +173,11 @@ public class Movement : MonoBehaviour
             {
                 Debug.Log(GameObject.ReferenceEquals(leftHandHit.transform.gameObject, rightHandHit.transform.gameObject));
                 if (leftHandHit.point!=leftHand.position && rightHandHit.point != rightHand.position && GameObject.ReferenceEquals(leftHandHit.transform.gameObject, rightHandHit.transform.gameObject))
-                { 
-                    GrabLedge();
+                {
+                    if (leftHandHit.point.y > rightHandHit.point.y)
+                        GrabLedge(leftHandHit.point);
+                    else
+                        GrabLedge(rightHandHit.point);
                     searchingLedge = false;
                     break;
                 }
